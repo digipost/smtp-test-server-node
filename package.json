@@ -1,0 +1,17 @@
+{
+  "name": "smtp-test-server-node",
+  "version": "0.1.0",
+  "description": "",
+  "main": "server.js",
+  "type": "module",
+  "engines": {
+    "node": "16"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Digipost",
+  "license": "MIT"
+}

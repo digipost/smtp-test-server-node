@@ -1,0 +1,32 @@
+# fly.toml file generated for smtp-test-server on 2022-07-01T14:42:52+02:00
+
+app = "smtp-test-server"
+kill_signal = "SIGINT"
+kill_timeout = 5
+processes = []
+
+[build]
+  builder = "heroku/buildpacks:20"
+
+[env]
+  PORT = "2525"
+
+[experimental]
+  allowed_public_ports = [2525]
+  auto_rollback = true
+
+[[services]]
+  internal_port = 2525
+  processes = ["app"]
+  protocol = "tcp"
+
+  [services.concurrency]
+    hard_limit = 25
+    soft_limit = 20
+    type = "connections"
+
+  [[services.ports]]
+    port = "2525"
+
+  [[services.ports]]
+    port = "587"
