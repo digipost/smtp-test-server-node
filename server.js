@@ -14,12 +14,18 @@ function getResponseForRecipient(recipient) {
   switch (recipient) {
     case "ok":
       return "250 OK";
+    case "shutting-down":
+      return "421 Shutting down";
     case "mailbox-busy":
       return "450 Mailbox busy";
-    case "too-many-recipients":
-      return "452 Too many recipients";
+    case "service-unavailable":
+      return "451 Service unavailable - try again later";
+    case "insufficient-storage":
+      return "452 Insufficient system storage";
     case "too-much-mail-data":
       return "552 Too much mail data";
+    case "mailbox-syntax-incorrect":
+      return "553 Mailbox name not allowed / syntax incorrect";
     default:
       return "550 Requested action not taken: mailbox unavailable";
   }
@@ -66,7 +72,6 @@ function handleChunk(socket, chunk) {
   }
 
   const recipientAddress = chunk.match(/<(.*)>/)[1];
-  console.log("recipientAddress:", recipientAddress);
 
   if (!recipientAddress) {
     return send("500 Syntax error");
