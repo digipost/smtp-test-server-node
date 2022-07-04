@@ -35,6 +35,28 @@ You can find the list of SMTP's reply codes here: [4.2.3: Reply Codes](https://w
 | mailbox-syntax-incorrect   | 553             | Mailbox name not allowed / syntax incorrect                     |
 | <All other addresses>      | 550             | Mailbox unavailable                                             |
 
+## Hosting your own Server
+
+In order to use this server on your own with real email addresses, you need to host this server and connect your domain to it.
+We have used [fly.io](https://fly.io), as it provides a simple way of hosting a server with a static IP that can accept TCP traffic on the ports of our choosing.
+Other providers might just support HTTP, but this is an SMTP server, and therefore we need to open the standard SMTP ports (25, 587, 465 and 2525).
+
+Set up an account on Fly.io and install the `flyctl` command line tool. Log in with `flyctl auth login`.
+We have already configured a `fly.toml` file, so you should be able to deploy your app by running `flyctl deploy`.
+
+Decide on a (sub)domain to use for your emails. Let's say that it is `test.example.com`. You will want to set up two DNS records:
+
+- An `A` record pointing to the IP address that Fly gave you for your server.
+- An `MX` record with a priority value and the domain, say `0 test.example.com`.
+
+Also, set a secret environment variable for your server pointing to the same domain:
+
+```
+flyctl secrets set DOMAIN=test.example.com
+```
+
+Now all is ready for you to start sending emails to `@test.example.com`! Note that it might take a while for the DNS records to propagate.
+
 ## Useful SMTP links
 
 - [RFC 2821: Simple Mail Transfer Protocol](https://www.rfc-editor.org/rfc/rfc2821)
