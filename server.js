@@ -31,36 +31,37 @@ function isCommand(chunk, command) {
 
 function handleChunk(socket, chunk) {
   const send = (message) => sendToSocket(socket, message);
+  const isCmd = (command) => isCommand(chunk, command);
 
-  if (isCommand("EHLO")) {
+  if (isCmd("EHLO")) {
     return send([`250-${DOMAIN} greets you`, "250 OK"]);
   }
 
-  if (isCommand("HELO")) {
+  if (isCmd("HELO")) {
     return send(`250 ${DOMAIN}`);
   }
 
-  if (isCommand("DATA")) {
+  if (isCmd("DATA")) {
     return send("354 Start mail input; end with <CRLF>.<CRLF>");
   }
 
-  if (isCommand("HELP") || isCommand("EXPN")) {
+  if (isCmd("HELP") || isCmd("EXPN")) {
     return send("502 Command not implemented");
   }
 
-  if (isCommand("VRFY")) {
+  if (isCmd("VRFY")) {
     return send(
       "252 Cannot VRFY user, but will accept message and attempt delivery"
     );
   }
 
-  if (isCommand("QUIT")) {
+  if (isCmd("QUIT")) {
     send(`221 ${DOMAIN} Service closing transmission channel`);
     socket.end();
     return;
   }
 
-  if (!isCommand("RCPT TO")) {
+  if (!isCmd("RCPT TO")) {
     return send("250 OK");
   }
 
