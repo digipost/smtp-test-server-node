@@ -15,6 +15,7 @@ import { createServer } from "net";
  */
 
 const DOMAIN = process.env.DOMAIN ?? "example.com";
+const PORT = process.env.PORT ?? 2525;
 
 const server = createServer();
 
@@ -106,7 +107,7 @@ server.on("connection", (connection) => {
 server.listen(
   {
     host: "0.0.0.0",
-    port: 2525,
+    port: PORT,
   },
   () => {
     console.log("opened server on", server.address());
