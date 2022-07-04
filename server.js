@@ -1,19 +1,5 @@
 import { createServer } from "net";
 
-/**
- *
- * SMTP
- *
- * Commands:
- * https://www.rfc-editor.org/rfc/rfc2821#section-4.1
- *
- * Reply Codes:
- * https://www.rfc-editor.org/rfc/rfc2821#section-4.2.3
- *
- * Scenarios:
- * https://www.rfc-editor.org/rfc/rfc2821#appendix-D
- */
-
 const DOMAIN = process.env.DOMAIN ?? "example.com";
 const PORT = process.env.PORT ?? 2525;
 

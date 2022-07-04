@@ -13,3 +13,10 @@ indicates that the recipient's mailbox is busy and therefore the email cannot be
 | too-much-mail-data         | 552             | Too much mail data, i.e. the size of the email body is too big.           |
 
 All other email addresses will return 550 Mailbox Unavailable.
+
+## Useful SMTP links
+
+- [RFC 2821: Simple Mail Transfer Protocol](https://www.rfc-editor.org/rfc/rfc2821)
+  - [4.1: Commands](https://www.rfc-editor.org/rfc/rfc2821#section-4.1)
+  - [4.2.3: Reply Codes](https://www.rfc-editor.org/rfc/rfc2821#section-4.2.3)
+  - [Appendix D: Scenarios](https://www.rfc-editor.org/rfc/rfc2821#appendix-D)
