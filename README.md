@@ -33,7 +33,7 @@ You can find the list of SMTP's reply codes here: [4.2.3: Reply Codes](https://w
 | :------------------------- | :-------------- | :-------------------------------------------------------------- |
 | too-much-mail-data         | 552             | Too much mail data, i.e. the size of the email body is too big. |
 | mailbox-syntax-incorrect   | 553             | Mailbox name not allowed / syntax incorrect                     |
-| <All other addresses>      | 550             | Mailbox unavailable                                             |
+| [All other addresses]      | 550             | Mailbox unavailable                                             |
 
 ## Hosting your own Server
 
