@@ -26,7 +26,13 @@ processes = []
     type = "connections"
 
   [[services.ports]]
+    port = "25"
+
+  [[services.ports]]
     port = "2525"
 
   [[services.ports]]
     port = "587"
+
+  [[services.ports]]
+    port = "465"
