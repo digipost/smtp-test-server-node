@@ -8,32 +8,33 @@ indicates that the recipient's mailbox is busy and therefore the email cannot be
 
 The following tables describe the available recipient addresses and which SMTP codes will be replied for each of them.
 The first column holds the local part of the email address. That is the part on the left-hand side of the @ in the address.
-All other addresses than those listed below will respond with 550 Mailbox unavailable.
+All other addresses than those listed below will respond with `550 5.1.1 Mailbox unavailable`.
 
-You can find the list of SMTP's reply codes here: [4.2.3: Reply Codes](https://www.rfc-editor.org/rfc/rfc2821#section-4.2.3).
+The basic SMTP Reply Codes are defined in RFC 2821: [4.2.3: Reply Codes](https://www.rfc-editor.org/rfc/rfc2821#section-4.2.3).
+The Enhanced Status Codes provide more detailed information about the different scenarios, and are defined by [RFC 3464 Enhanced Mail System Status Codes](https://datatracker.ietf.org/doc/html/rfc3463).
 
 ### Addresses for Successful Responses (2.y.z)
 
-| Email Address (Local Part) | SMTP Reply Code | Description                                 |
-| :------------------------- | :-------------- | :------------------------------------------ |
-| ok                         | 250             | OK – The email is accepted and all is good. |
+| Email Address (Local Part) | SMTP Reply Code | Enhanced Status Code | Description                                 |
+| :------------------------- | :-------------- | -------------------- | :------------------------------------------ |
+| ok                         | 250             | 2.0.0                | OK – The email is accepted and all is good. |
 
 ### Addresses for Transient Error Responses (4.y.z)
 
-| Email Address (Local Part) | SMTP Reply Code | Description                                        |
-| :------------------------- | :-------------- | :------------------------------------------------- |
-| shutting-down              | 421             | Service not available, the server is shutting down |
-| mailbox-busy               | 450             | The mailbox is busy and unavailable                |
-| service-unavailable        | 451             | Service unavailable - try again later              |
-| insufficient-storage       | 452             | Insufficient system storage                        |
+| Email Address (Local Part) | SMTP Reply Code | Enhanced Status Code | Description                                        |
+| :------------------------- | :-------------- | -------------------- | :------------------------------------------------- |
+| shutting-down              | 421             | 4.4.2                | Service not available, the server is shutting down |
+| mailbox-busy               | 450             | 4.2.1                | The mailbox is busy and unavailable                |
+| service-unavailable        | 451             | 4.3.0                | Service unavailable - try again later              |
+| insufficient-storage       | 452             | 4.3.1                | Insufficient system storage                        |
 
 ### Addresses for Permanent Error Responses (5.y.z)
 
-| Email Address (Local Part) | SMTP Reply Code | Description                                                     |
-| :------------------------- | :-------------- | :-------------------------------------------------------------- |
-| too-much-mail-data         | 552             | Too much mail data, i.e. the size of the email body is too big. |
-| mailbox-syntax-incorrect   | 553             | Mailbox name not allowed / syntax incorrect                     |
-| [All other addresses]      | 550             | Mailbox unavailable                                             |
+| Email Address (Local Part) | SMTP Reply Code | Enhanced Status Code | Description                                                     |
+| :------------------------- | :-------------- | :------------------- | :-------------------------------------------------------------- |
+| too-much-mail-data         | 552             | 5.2.3                | Too much mail data, i.e. the size of the email body is too big. |
+| mailbox-syntax-incorrect   | 553             | 5.1.2                | Mailbox name not allowed / syntax incorrect                     |
+| [All other addresses]      | 550             | 5.1.1                | Mailbox unavailable                                             |
 
 ## Hosting your own Server
 
@@ -63,3 +64,4 @@ Now all is ready for you to start sending emails to `@test.example.com`! Note th
   - [4.1: Commands](https://www.rfc-editor.org/rfc/rfc2821#section-4.1)
   - [4.2.3: Reply Codes](https://www.rfc-editor.org/rfc/rfc2821#section-4.2.3)
   - [Appendix D: Scenarios](https://www.rfc-editor.org/rfc/rfc2821#appendix-D)
+- [RFC 3463: Enhanced Mail System Status Codes](https://datatracker.ietf.org/doc/html/rfc3463)

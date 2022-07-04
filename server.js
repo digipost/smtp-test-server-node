@@ -13,21 +13,21 @@ function sendToSocket(socket, data) {
 function getResponseForRecipient(recipient) {
   switch (recipient) {
     case "ok":
-      return "250 OK";
+      return "250 2.0.0 OK";
     case "shutting-down":
-      return "421 Shutting down";
+      return "421 4.4.2 Shutting down";
     case "mailbox-busy":
-      return "450 Mailbox busy";
+      return "450 4.2.1 Mailbox busy";
     case "service-unavailable":
-      return "451 Service unavailable - try again later";
+      return "451 4.3.0 Service unavailable - try again later";
     case "insufficient-storage":
-      return "452 Insufficient system storage";
+      return "452 4.3.1 Insufficient system storage";
     case "too-much-mail-data":
-      return "552 Too much mail data";
+      return "552 5.2.3 Too much mail data";
     case "mailbox-syntax-incorrect":
-      return "553 Mailbox name not allowed / syntax incorrect";
+      return "553 5.1.2 Mailbox name not allowed / syntax incorrect";
     default:
-      return "550 Requested action not taken: mailbox unavailable";
+      return "550 5.1.1 Requested action not taken: mailbox unavailable";
   }
 }
 
@@ -74,7 +74,7 @@ function handleChunk(socket, chunk) {
   const recipientAddress = chunk.match(/<(.*)>/)[1];
 
   if (!recipientAddress) {
-    return send("500 Syntax error");
+    return send("500 5.1.3 Syntax error");
   }
 
   const recipient = recipientAddress.slice(0, recipientAddress.indexOf("@"));
