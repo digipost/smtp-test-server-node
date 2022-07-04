@@ -22,6 +22,8 @@ function getResponseForRecipient(recipient) {
       return "451 4.3.0 Service unavailable - try again later";
     case "insufficient-storage":
       return "452 4.3.1 Insufficient system storage";
+    case "mailbox-full":
+      return "452 4.2.2 The user's mailbox is full (quota exceeded)";
     case "too-much-mail-data":
       return "552 5.2.3 Too much mail data";
     case "mailbox-syntax-incorrect":

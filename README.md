@@ -27,6 +27,7 @@ The Enhanced Status Codes provide more detailed information about the different 
 | mailbox-busy               | 450             | 4.2.1                | The mailbox is busy and unavailable                |
 | service-unavailable        | 451             | 4.3.0                | Service unavailable - try again later              |
 | insufficient-storage       | 452             | 4.3.1                | Insufficient system storage                        |
+| mailbox-full               | 452             | 4.2.2                | The user's mailbox is full (quota exceeded)        |
 
 ### Addresses for Permanent Error Responses (5.y.z)
 
