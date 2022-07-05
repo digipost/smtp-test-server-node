@@ -13,6 +13,21 @@ All other addresses than those listed below will respond with `550 5.1.1 Mailbox
 The basic SMTP Reply Codes are defined in RFC 2821: [4.2.3: Reply Codes](https://www.rfc-editor.org/rfc/rfc2821#section-4.2.3).
 The Enhanced Status Codes provide more detailed information about the different scenarios, and are defined by [RFC 3464 Enhanced Mail System Status Codes](https://datatracker.ietf.org/doc/html/rfc3463).
 
+### Eventual Success
+
+When testing transient (retryable) errors, it is also useful to have the email succeed after a
+period of failing. For instance, you might want to emulate the following scenario: An email to
+alice@example.com is temporarily undeliverable because Alice's mailbox is currently full. Two hours
+later, Alice deletes a good portion of old emails from her mailbox, and it is now able to receive
+emails again. The same email that you tried to send earlier is retried (by your system or your
+email provider), and is now successfully delivered.
+
+You can emulate this by adding a `#` and an ISO 8601 timestamp to the local part of any of the
+email addresses listed below. The email will succeed if this time has been passed.
+
+For instance, an email to `mailbox-full#2022-07-06T08:00:00Z@example.com` will fail with code
+`452 4.2.2` _until_ July 6th 2022 at 8 AM UTC. After this, it will succeed with status 250 2.0.0.
+
 ### Addresses for Successful Responses (2.y.z)
 
 | Email Address (Local Part) | SMTP Reply Code | Enhanced Status Code | Description                                 |

@@ -12,9 +12,23 @@ function getResponseForRCPT(chunk) {
     return "500 5.1.3 Syntax error";
   }
 
-  const recipient = recipientAddress.slice(0, recipientAddress.indexOf("@"));
+  const localPart = recipientAddress.slice(0, recipientAddress.indexOf("@"));
 
-  switch (recipient) {
+  const [username, okTimestamp] = localPart.split("#");
+
+  if (okTimestamp) {
+    const timestamp = new Date(okTimestamp);
+
+    if (isNaN(timestamp)) {
+      return "500 5.1.3 Syntax error, invalid timestamp";
+    }
+
+    if (timestamp.getTime() < new Date().getTime()) {
+      return "250 2.0.0 OK";
+    }
+  }
+
+  switch (username) {
     case "ok":
       return "250 2.0.0 OK";
     case "shutting-down":
