@@ -5,12 +5,15 @@ const PORT = process.env.PORT ?? 2525;
 
 const server = createServer();
 
-function sendToSocket(socket, data) {
-  const message = Array.isArray(data) ? data.join("\n") : data;
-  socket.write(message + "\n", () => console.log("Sent: " + message));
-}
+function getResponseForRCPT(chunk) {
+  const recipientAddress = chunk.match(/<(.*)>/)[1];
 
-function getResponseForRecipient(recipient) {
+  if (!recipientAddress) {
+    return "500 5.1.3 Syntax error";
+  }
+
+  const recipient = recipientAddress.slice(0, recipientAddress.indexOf("@"));
+
   switch (recipient) {
     case "ok":
       return "250 2.0.0 OK";
@@ -33,69 +36,63 @@ function getResponseForRecipient(recipient) {
   }
 }
 
-function isCommand(chunk, command) {
-  return new RegExp("^" + command, "i").test(chunk);
-}
-
-function handleChunk(socket, chunk) {
-  const send = (message) => sendToSocket(socket, message);
-  const isCmd = (command) => isCommand(chunk, command);
-
-  if (isCmd("EHLO")) {
-    return send([`250-${DOMAIN} greets you`, "250 OK"]);
-  }
-
-  if (isCmd("HELO")) {
-    return send(`250 ${DOMAIN}`);
-  }
-
-  if (isCmd("DATA")) {
-    return send("354 Start mail input; end with <CRLF>.<CRLF>");
-  }
-
-  if (isCmd("HELP") || isCmd("EXPN")) {
-    return send("502 Command not implemented");
-  }
-
-  if (isCmd("VRFY")) {
-    return send(
-      "252 Cannot VRFY user, but will accept message and attempt delivery"
-    );
-  }
-
-  if (isCmd("QUIT")) {
-    send(`221 ${DOMAIN} Service closing transmission channel`);
-    socket.end();
-    return;
-  }
-
-  if (!isCmd("RCPT TO")) {
-    return send("250 OK");
-  }
-
-  const recipientAddress = chunk.match(/<(.*)>/)[1];
-
-  if (!recipientAddress) {
-    return send("500 5.1.3 Syntax error");
-  }
-
-  const recipient = recipientAddress.slice(0, recipientAddress.indexOf("@"));
-
-  return send(getResponseForRecipient(recipient));
-}
-
 server.on("connection", (connection) => {
-  console.log("server connection");
+  console.log("Connection established");
+
+  const send = (data) => {
+    const message = Array.isArray(data) ? data.join("\n") : data;
+    connection.write(message + "\n", () => console.log("Sent: " + message));
+  };
+
+  send(`220 ${DOMAIN} Service ready`);
+
+  let isProcessingData = false;
 
   connection.on("data", (chunkBuffer) => {
     const chunk = chunkBuffer.toString();
     console.log("\n--- chunk START");
-    console.log(chunk.trim());
+    console.log(chunk);
     console.log("--- chunk END\n");
-    handleChunk(connection, chunk);
-  });
 
-  sendToSocket(connection, `220 ${DOMAIN} Service ready`);
+    const command = chunk.slice(0, 4).toUpperCase();
+
+    switch (command) {
+      case "EHLO":
+        return send([`250-${DOMAIN} greets you`, "250 OK"]);
+      case "HELO":
+        return send(`250 ${DOMAIN}`);
+      case "RCPT":
+        return send(getResponseForRCPT(chunk));
+      case "DATA":
+        isProcessingData = true;
+        return send("354 Start mail input; end with <CRLF>.<CRLF>");
+      case "VRFY":
+        return send(
+          "252 Cannot VRFY user, but will accept message and attempt delivery"
+        );
+      case "QUIT": {
+        send(`221 ${DOMAIN} Service closing transmission channel`);
+        connection.end();
+        return;
+      }
+      case "HELP":
+      case "EXPN":
+        return send("502 Command not implemented");
+      default: {
+        if (!isProcessingData) {
+          return send("250 OK");
+        }
+
+        const trimmed = chunk.trimEnd();
+        const isEndCharacter = trimmed === "." || trimmed.endsWith("\n.");
+
+        if (isEndCharacter) {
+          isProcessingData = false;
+          return send("250 OK");
+        }
+      }
+    }
+  });
 });
 
 server.listen(
