@@ -72,7 +72,7 @@ server.on("connection", (connection) => {
 
     switch (command) {
       case "EHLO":
-        return send([`250-${DOMAIN} greets you`, "250 OK"]);
+        return send([`250-${DOMAIN} greets you`, "250 ENHANCEDSTATUSCODES"]);
       case "HELO":
         return send(`250 ${DOMAIN}`);
       case "RCPT":
