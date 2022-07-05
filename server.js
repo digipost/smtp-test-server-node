@@ -24,13 +24,13 @@ function getResponseForRCPT(chunk) {
     }
 
     if (timestamp.getTime() < new Date().getTime()) {
-      return "250 2.0.0 OK";
+      return "250 2.1.5 Recipient OK";
     }
   }
 
   switch (username) {
     case "ok":
-      return "250 2.0.0 OK";
+      return "250 2.1.5 Recipient OK";
     case "shutting-down":
       return "421 4.4.2 Shutting down";
     case "mailbox-busy":
@@ -75,6 +75,8 @@ server.on("connection", (connection) => {
         return send([`250-${DOMAIN} greets you`, "250 ENHANCEDSTATUSCODES"]);
       case "HELO":
         return send(`250 ${DOMAIN}`);
+      case "MAIL":
+        return send("250 2.1.0 Sender OK");
       case "RCPT":
         return send(getResponseForRCPT(chunk));
       case "DATA":
@@ -94,7 +96,7 @@ server.on("connection", (connection) => {
         return send("502 Command not implemented");
       default: {
         if (!isProcessingData) {
-          return send("250 OK");
+          return send("250 2.6.0 Message accepted");
         }
 
         const trimmed = chunk.trimEnd();
@@ -102,7 +104,7 @@ server.on("connection", (connection) => {
 
         if (isEndCharacter) {
           isProcessingData = false;
-          return send("250 OK");
+          return send("250 2.6.0 Message accepted");
         }
       }
     }
