@@ -17,7 +17,7 @@ function getResponseForRCPT(chunk) {
   const [username, okTimestamp] = localPart.split("#");
 
   if (okTimestamp) {
-    const timestamp = new Date(okTimestamp);
+    const timestamp = new Date(okTimestamp.replaceAll("_", ":"));
 
     if (isNaN(timestamp)) {
       return "500 5.1.3 Syntax error, invalid timestamp";

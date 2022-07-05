@@ -22,10 +22,11 @@ later, Alice deletes a good portion of old emails from her mailbox, and it is no
 emails again. The same email that you tried to send earlier is retried (by your system or your
 email provider), and is now successfully delivered.
 
-You can emulate this by adding a `#` and an ISO 8601 timestamp to the local part of any of the
-email addresses listed below. The email will succeed if this time has been passed.
+You can emulate this by adding a `#` and an ISO 8601 timestamp with underscores instead of colons
+to the local part of any of the email addresses listed below. The email will succeed if this time
+has been passed.
 
-For instance, an email to `mailbox-full#2022-07-06T08:00:00Z@example.com` will fail with code
+For instance, an email to `mailbox-full#2022-07-06T08_00_00Z@example.com` will fail with code
 `452 4.2.2` _until_ July 6th 2022 at 8 AM UTC. After this, it will succeed with status 250 2.0.0.
 
 ### Addresses for Successful Responses (2.y.z)
