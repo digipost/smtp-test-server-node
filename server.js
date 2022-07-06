@@ -112,12 +112,15 @@ server.on("connection", (connection) => {
         connection.end();
         return;
       }
+      case "NOOP":
+      case "RSET":
+        return send("250 2.0.0 OK");
       case "HELP":
       case "EXPN":
-        return send("502 Command not implemented");
+        return send("502 5.5.1 Command not implemented");
       default: {
         if (!isProcessingData) {
-          return send("250 2.6.0 Message accepted");
+          return send("500 5.5.2 Command unrecognized");
         }
 
         const trimmed = chunk.trimEnd();
