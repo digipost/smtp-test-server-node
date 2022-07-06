@@ -105,10 +105,10 @@ server.on("connection", (connection) => {
         return send("354 Start mail input; end with <CRLF>.<CRLF>");
       case "VRFY":
         return send(
-          "252 Cannot VRFY user, but will accept message and attempt delivery"
+          "252 2.1.5 Cannot VRFY user, but will accept message and attempt delivery"
         );
       case "QUIT": {
-        send(`221 ${DOMAIN} Service closing transmission channel`);
+        send(`221 2.0.0 ${DOMAIN} Service closing transmission channel`);
         connection.end();
         return;
       }
