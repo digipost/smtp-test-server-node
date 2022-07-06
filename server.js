@@ -3,6 +3,10 @@ import { createServer } from "net";
 const DOMAIN = process.env.DOMAIN ?? "example.com";
 const PORT = process.env.PORT ?? 2525;
 
+// The time in ms to wait for client data before closing the connection.
+// https://www.rfc-editor.org/rfc/rfc2821#section-4.5.3.2
+const TIMEOUT = 5 * 60 * 1000;
+
 const server = createServer();
 
 function getResponseForRCPT(chunk) {
@@ -53,6 +57,21 @@ function getResponseForRCPT(chunk) {
 server.on("connection", (connection) => {
   console.log("Connection established");
 
+  let timeout;
+
+  const resetTimeout = () => {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(() => {
+      console.log("Closing connection due to timeout.");
+      send(`221 ${DOMAIN} Service closing connection due to timeout`);
+      connection.end();
+    }, TIMEOUT);
+  };
+
+  resetTimeout();
+
   const send = (data) => {
     const message = Array.isArray(data) ? data.join("\n") : data;
     connection.write(message + "\n", () => console.log("Sent: " + message));
@@ -63,6 +82,8 @@ server.on("connection", (connection) => {
   let isProcessingData = false;
 
   connection.on("data", (chunkBuffer) => {
+    resetTimeout();
+
     const chunk = chunkBuffer.toString();
     console.log("\n--- chunk START");
     console.log(chunk);
