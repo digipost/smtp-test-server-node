@@ -65,7 +65,7 @@ server.on("connection", (connection) => {
     }
     timeout = setTimeout(() => {
       console.log("Closing connection due to timeout.");
-      send(`221 ${DOMAIN} Service closing connection due to timeout`);
+      send(`421 4.4.2 ${DOMAIN} Service closing connection due to timeout`);
       connection.end();
     }, TIMEOUT);
   };
