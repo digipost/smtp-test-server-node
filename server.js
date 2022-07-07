@@ -57,33 +57,24 @@ function getResponseForRCPT(chunk) {
 server.on("connection", (connection) => {
   console.log("Connection established");
 
-  let timeout;
-
-  const resetTimeout = () => {
-    if (timeout) {
-      clearTimeout(timeout);
-    }
-    timeout = setTimeout(() => {
-      console.log("Closing connection due to timeout.");
-      send(`421 4.4.2 ${DOMAIN} Service closing connection due to timeout`);
-      connection.end();
-    }, TIMEOUT);
-  };
-
-  resetTimeout();
-
   const send = (data) => {
     const message = Array.isArray(data) ? data.join("\n") : data;
     connection.write(message + "\n", () => console.log("Sent: " + message));
   };
+
+  connection.setTimeout(TIMEOUT);
+
+  connection.on("timeout", () => {
+    console.log("Closing connection due to timeout.");
+    send(`421 4.4.2 ${DOMAIN} Service closing connection due to timeout`);
+    connection.end();
+  });
 
   send(`220 ${DOMAIN} Service ready`);
 
   let isProcessingData = false;
 
   connection.on("data", (chunkBuffer) => {
-    resetTimeout();
-
     const chunk = chunkBuffer.toString();
     console.log("\n--- chunk START");
     console.log(chunk);
